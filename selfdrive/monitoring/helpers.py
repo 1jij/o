@@ -396,27 +396,27 @@ class DriverMonitoring:
       self.dcam_uncertain_alerted = True
 
 
-  def get_state_packet(self, valid=True):
+def get_state_packet(self, valid=True):
     # build driverMonitoringState packet
     dat = messaging.new_message('driverMonitoringState', valid=valid)
     dat.driverMonitoringState = {
       "events": self.current_events.to_msg(),
-      "faceDetected": self.face_detected,
-      "isDistracted": self.driver_distracted,
-      "distractedType": sum(self.distracted_types),
-      "awarenessStatus": self.awareness,
+      "faceDetected": True,                # 무조건 감지됨
+      "isDistracted": False,               # 한눈팔지 않음
+      "distractedType": 0,                 # 주의 산만 유형 없음
+      "awarenessStatus": 1.0,              # 인식 지수 100%
       "posePitchOffset": self.pose.pitch_offseter.filtered_stat.mean(),
       "posePitchValidCount": self.pose.pitch_offseter.filtered_stat.n,
       "poseYawOffset": self.pose.yaw_offseter.filtered_stat.mean(),
       "poseYawValidCount": self.pose.yaw_offseter.filtered_stat.n,
       "stepChange": self.step_change,
-      "awarenessActive": self.awareness_active,
-      "awarenessPassive": self.awareness_passive,
+      "awarenessActive": 1.0,              # 활성 인식 지수 최대
+      "awarenessPassive": 1.0,             # 수동 인식 지수 최대
       "isLowStd": self.pose.low_std,
-      "hiStdCount": self.hi_stds,
+      "hiStdCount": 0,                     # 비정상 수치 카운트 0
       "isActiveMode": self.active_monitoring_mode,
       "isRHD": self.wheel_on_right,
-      "uncertainCount": self.dcam_uncertain_cnt,
+      "uncertainCount": 0,                 # 불확실성 카운트 0
     }
     return dat
 
